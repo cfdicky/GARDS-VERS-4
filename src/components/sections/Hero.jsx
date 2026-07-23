@@ -110,12 +110,12 @@ export default function Hero({ loaded }) {
   ];
 
   const mobilePositions = [
-    { x: -100, y: -55, z: 20, rotZ: -1, width: 140, delay: 0 },
-    { x: 0, y: 45, z: 35, rotZ: 1, width: 138, delay: 0.1 },
-    { x: 100, y: -50, z: 25, rotZ: -1, width: 142, delay: 0.2 },
-    { x: -80, y: 120, z: 30, rotZ: 1, width: 136, delay: 0.3 },
-    { x: 30, y: 115, z: 40, rotZ: -1, width: 140, delay: 0.4 },
-    { x: 110, y: 110, z: 22, rotZ: 1, width: 134, delay: 0.5 },
+    { x: -80, y: -50, z: 20, rotZ: 0, width: 130, delay: 0 },
+    { x: 80, y: -50, z: 30, rotZ: 0, width: 130, delay: 0.1 },
+    { x: -80, y: 30, z: 25, rotZ: 0, width: 130, delay: 0.2 },
+    { x: 80, y: 30, z: 35, rotZ: 0, width: 130, delay: 0.3 },
+    { x: -80, y: 110, z: 40, rotZ: 0, width: 130, delay: 0.4 },
+    { x: 80, y: 110, z: 22, rotZ: 0, width: 130, delay: 0.5 },
   ];
 
   const activePositions = isMobile ? mobilePositions : cardPositions;
@@ -131,7 +131,7 @@ export default function Hero({ loaded }) {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: isMobile ? '6rem 1rem 2rem' : '8rem 2rem 4rem',
+          padding: isMobile ? '5rem 1rem 1.5rem' : '8rem 2rem 4rem',
           overflow: 'hidden',
         }}
       >
@@ -212,7 +212,7 @@ export default function Hero({ loaded }) {
           position: 'relative',
           width: '100%',
           maxWidth: '900px',
-          height: '480px',
+          height: isMobile ? '300px' : '480px',
           zIndex: 1,
         }}>
           {/* Central 3D Text */}
@@ -220,10 +220,10 @@ export default function Hero({ loaded }) {
             position: 'absolute',
             left: '50%',
             top: '50%',
-            marginLeft: '-300px',
-            marginTop: '-80px',
-            width: '600px',
-            height: '160px',
+            marginLeft: isMobile ? '-120px' : '-300px',
+            marginTop: isMobile ? '-40px' : '-80px',
+            width: isMobile ? '240px' : '600px',
+            height: isMobile ? '80px' : '160px',
             transformStyle: 'preserve-3d',
             animation: 'gardsSpin 8s ease-in-out infinite',
             zIndex: 50,
@@ -277,8 +277,9 @@ export default function Hero({ loaded }) {
             </div>
 
             <div style={{
-              position: 'absolute', top: '50%', left: '50%', width: '500px', height: '180px',
-              marginLeft: '-250px', marginTop: '-90px',
+              position: 'absolute', top: '50%', left: '50%',
+              width: isMobile ? '200px' : '500px', height: isMobile ? '100px' : '180px',
+              marginLeft: isMobile ? '-100px' : '-250px', marginTop: isMobile ? '-50px' : '-90px',
               background: 'radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 50%, transparent 75%)',
               filter: 'blur(50px)', pointerEvents: 'none',
               animation: 'glowPulse 4s ease-in-out infinite',
@@ -345,7 +346,7 @@ export default function Hero({ loaded }) {
                   top: '50%',
                   width: `${pos.width}px`,
                   marginLeft: `-${pos.width / 2}px`,
-                  marginTop: '-55px',
+                  marginTop: isMobile ? '-40px' : '-55px',
                   transform: loaded
                     ? `translate3d(${pos.x + (isMobile ? mousePos.x * 3 : (pos.x < 0 ? mousePos.x * 12 : mousePos.x * -12))}px, ${pos.y + Math.sin(timeRef.current + pos.delay * 5) * 6 + (isMobile ? mousePos.y * 2 : mousePos.y * 4)}px, 0) rotate(${pos.rotZ + mousePos.x * 1.5}deg) scale(${isSelected ? 1.15 : 1 - pos.z * 0.0005})`
                     : `translate3d(0px, 40px, 0) rotate(0deg) scale(0.8)`,
