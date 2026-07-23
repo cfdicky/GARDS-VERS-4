@@ -79,7 +79,8 @@ export default function Hero({ loaded }) {
           const idx = projects.findIndex((p) => p.id === id);
           if (idx === -1) continue;
           const pos = activePos[idx];
-          const floatY = Math.sin(timeRef.current + pos.delay * 5) * 6;
+          const floatAmp = isMobile ? 8 : 6;
+          const floatY = Math.sin(timeRef.current + pos.delay * 5) * floatAmp;
           const mpX = mousePosRef.current.x;
           const mpY = mousePosRef.current.y;
           const isLeft = pos.x < 0;
@@ -110,12 +111,12 @@ export default function Hero({ loaded }) {
   ];
 
   const mobilePositions = [
-    { x: -80, y: -50, z: 20, rotZ: 0, width: 130, delay: 0 },
-    { x: 80, y: -50, z: 30, rotZ: 0, width: 130, delay: 0.1 },
-    { x: -80, y: 30, z: 25, rotZ: 0, width: 130, delay: 0.2 },
-    { x: 80, y: 30, z: 35, rotZ: 0, width: 130, delay: 0.3 },
-    { x: -80, y: 110, z: 40, rotZ: 0, width: 130, delay: 0.4 },
-    { x: 80, y: 110, z: 22, rotZ: 0, width: 130, delay: 0.5 },
+    { x: -80, y: -55, z: 20, rotZ: -2, width: 132, delay: 0 },
+    { x: 80, y: -50, z: 30, rotZ: 1.5, width: 128, delay: 0.1 },
+    { x: -80, y: 25, z: 25, rotZ: 1, width: 134, delay: 0.2 },
+    { x: 80, y: 30, z: 35, rotZ: -1.5, width: 130, delay: 0.3 },
+    { x: -80, y: 105, z: 40, rotZ: -1, width: 126, delay: 0.4 },
+    { x: 80, y: 110, z: 22, rotZ: 2, width: 133, delay: 0.5 },
   ];
 
   const activePositions = isMobile ? mobilePositions : cardPositions;
@@ -131,7 +132,7 @@ export default function Hero({ loaded }) {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: isMobile ? '5rem 1rem 1.5rem' : '8rem 2rem 4rem',
+          padding: isMobile ? '5.5rem 1rem 1.5rem' : '8rem 2rem 4rem',
           overflow: 'hidden',
         }}
       >
@@ -212,7 +213,7 @@ export default function Hero({ loaded }) {
           position: 'relative',
           width: '100%',
           maxWidth: '900px',
-          height: isMobile ? '300px' : '480px',
+          height: isMobile ? '380px' : '480px',
           zIndex: 1,
         }}>
           {/* Central 3D Text */}
