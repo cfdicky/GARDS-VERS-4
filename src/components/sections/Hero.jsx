@@ -38,7 +38,7 @@ export default function Hero({ loaded }) {
   }, []);
 
   const isMobileInit = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-  const stars = useMemo(() => generateStars(isMobileInit ? 60 : 180), []);
+  const stars = useMemo(() => generateStars(isMobileInit ? 40 : 120), []);
 
   const mousePosRef = useRef({ x: 0, y: 0 });
 
@@ -69,6 +69,26 @@ export default function Hero({ loaded }) {
   useEffect(() => {
     bouncingRef.current = bouncing;
   }, [bouncing]);
+
+  const handleBounceEnd = (id) => {
+    const el = cardRefs.current[id];
+    const idx = projects.findIndex((p) => p.id === id);
+    const pos = (isMobile ? mobilePositions : cardPositions)[idx];
+    if (el && pos) {
+      const mpX = mousePosRef.current.x;
+      const mpY = mousePosRef.current.y;
+      const isLeft = pos.x < 0;
+      const parallaxX = isMobile ? mpX * 3 : (isLeft ? mpX * 15 : mpX * -15);
+      const parallaxY = isMobile ? mpY * 2 : mpY * 5;
+      const floatY = Math.sin(timeRef.current + pos.delay * 5) * 6;
+      const rz = pos.rotZ + mpX * 2;
+      const sc = selectedCard === id ? 1.4 : 1 - pos.z * 0.0005;
+      el.style.transition = 'none';
+      el.style.transform = `translate3d(${pos.x + parallaxX}px, ${pos.y + floatY + parallaxY}px, 0) rotate(${rz}deg) scale(${sc})`;
+      el.offsetHeight;
+    }
+    setBouncing((b) => ({ ...b, [id]: false }));
+  };
 
   useEffect(() => {
     let frame;
@@ -178,9 +198,7 @@ export default function Hero({ loaded }) {
               el.style.transform = `translate3d(${pos.x + parallaxX}px, ${pos.y + floatY + parallaxY}px, 0) rotate(${pos.rotZ + mpX * 2}deg) scale(1)`;
             }
             setTimeout(() => {
-              setBouncing((b) => ({ ...b, [id]: false }));
-              const el = cardRefs.current[id];
-              if (el) el.style.transition = '';
+              handleBounceEnd(id);
             }, 600);
             return { ...prev, [id]: { x: 0, y: 0 } };
           }
@@ -487,7 +505,7 @@ export default function Hero({ loaded }) {
                 height: '100%',
                 background: 'var(--c-accent)',
                 borderRadius: '2px',
-                animation: 'loadingBarFill 2.2s cubic-bezier(0.25,1,0.5,1) forwards',
+                animation: 'loadingBarFill 0.8s cubic-bezier(0.25,1,0.5,1) forwards',
               }} />
             </div>
           )}

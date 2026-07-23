@@ -18,10 +18,10 @@ export default function Portfolio() {
     const handleOpen = (e) => {
       const project = projects.find((p) => p.id === e.detail.projectId);
       if (project) {
+        openProject(project);
         setTimeout(() => {
           document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => openProject(project), 600);
-        }, 100);
+        }, 50);
       }
     };
     window.addEventListener('openProject', handleOpen);

@@ -12,7 +12,7 @@ function App() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoaded(true), 2500);
+    const timer = setTimeout(() => setLoaded(true), 800);
     return () => clearTimeout(timer);
   }, []);
 
