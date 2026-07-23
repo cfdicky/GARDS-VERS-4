@@ -20,7 +20,6 @@ function generateStars(count) {
 export default function Hero({ loaded }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [time, setTime] = useState(0);
   const [dragOffsets, setDragOffsets] = useState({});
   const [dragging, setDragging] = useState(null);
   const [didDrag, setDidDrag] = useState(false);
@@ -28,6 +27,7 @@ export default function Hero({ loaded }) {
   const [isMobile, setIsMobile] = useState(false);
   const dragStartRef = useRef(null);
   const sectionRef = useRef(null);
+  const cardRefs = useRef({});
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -40,27 +40,78 @@ export default function Hero({ loaded }) {
   const isMobileInit = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
   const stars = useMemo(() => generateStars(isMobileInit ? 60 : 180), []);
 
+  const mousePosRef = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
+    let rafId;
     const handleMouseMove = (e) => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
       const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      setMousePos({ x, y });
+      mousePosRef.current = { x, y };
+      if (!isMobile) {
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => setMousePos({ x, y }));
+      }
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, [isMobile]);
+
+  const timeRef = useRef(0);
+  const bouncingRef = useRef({});
+  const [, forceUpdate] = useState(0);
+
+  useEffect(() => {
+    bouncingRef.current = bouncing;
+  }, [bouncing]);
 
   useEffect(() => {
     let frame;
-    const animate = () => {
-      setTime((t) => t + 0.008);
+    let lastUpdate = 0;
+    const targetFPS = isMobile ? 30 : 60;
+    const interval = 1000 / targetFPS;
+
+    const animate = (timestamp) => {
+      if (timestamp - lastUpdate >= interval) {
+        timeRef.current += 0.008;
+        lastUpdate = timestamp;
+
+        const cards = cardRefs.current;
+        const activePos = isMobile ? mobilePositions : cardPositions;
+        for (const id in cards) {
+          const el = cards[id];
+          if (!el) continue;
+          if (bouncingRef.current[id]) continue;
+          const idx = projects.findIndex((p) => p.id === id);
+          if (idx === -1) continue;
+          const pos = activePos[idx];
+          const isDraggingCard = dragging === id;
+          const floatY = isDraggingCard ? 0 : Math.sin(timeRef.current + pos.delay * 5) * 6;
+          const off = dragOffsets[id] || { x: 0, y: 0 };
+          const mpX = mousePosRef.current.x;
+          const mpY = mousePosRef.current.y;
+          const isLeft = pos.x < 0;
+          const parallaxX = isMobile ? mpX * 3 : (isLeft ? mpX * 15 : mpX * -15);
+          const parallaxY = isMobile ? mpY * 2 : mpY * 5;
+          const tx = pos.x + off.x + parallaxX;
+          const ty = pos.y + off.y + floatY + parallaxY;
+          const rz = pos.rotZ + mpX * 2;
+          const sc = isDraggingCard ? 1.1 : (selectedCard === id ? 1.4 : 1 - pos.z * 0.0005);
+          el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rz}deg) scale(${sc})`;
+        }
+
+        forceUpdate((n) => n + 1);
+      }
       frame = requestAnimationFrame(animate);
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [isMobile, dragging, dragOffsets, selectedCard]);
 
   const handleDragStart = (e, projectId) => {
     e.preventDefault();
@@ -115,8 +166,21 @@ export default function Hero({ loaded }) {
           if (cardCenterX < margin || cardCenterX > vw - margin ||
               cardCenterY < margin || cardCenterY > vh - margin) {
             setBouncing((b) => ({ ...b, [id]: true }));
+            const el = cardRefs.current[id];
+            if (el) {
+              const isLeft = pos.x < 0;
+              const mpX = mousePosRef.current.x;
+              const mpY = mousePosRef.current.y;
+              const parallaxX = isMobile ? mpX * 3 : (isLeft ? mpX * 15 : mpX * -15);
+              const parallaxY = isMobile ? mpY * 2 : mpY * 5;
+              const floatY = Math.sin(timeRef.current + pos.delay * 5) * 6;
+              el.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              el.style.transform = `translate3d(${pos.x + parallaxX}px, ${pos.y + floatY + parallaxY}px, 0) rotate(${pos.rotZ + mpX * 2}deg) scale(1)`;
+            }
             setTimeout(() => {
               setBouncing((b) => ({ ...b, [id]: false }));
+              const el = cardRefs.current[id];
+              if (el) el.style.transition = '';
             }, 600);
             return { ...prev, [id]: { x: 0, y: 0 } };
           }
@@ -432,15 +496,15 @@ export default function Hero({ loaded }) {
           {projects.map((project, index) => {
             const pos = activePositions[index];
             const isSelected = selectedCard === project.id;
-            const isDragging = dragging === project.id;
+            const isDraggingCard = dragging === project.id;
             const isBouncing = bouncing[project.id];
-            const floatY = Math.sin(time + pos.delay * 5) * 6;
-            const isLeft = pos.x < 0;
             const off = dragOffsets[project.id] || { x: 0, y: 0 };
+            const isLeft = pos.x < 0;
 
             return (
               <div
                 key={project.id}
+                ref={(el) => { cardRefs.current[project.id] = el; }}
                 onMouseDown={(e) => handleDragStart(e, project.id)}
                 onTouchStart={(e) => handleDragStart(e, project.id)}
                 onClick={() => {
@@ -456,16 +520,19 @@ export default function Hero({ loaded }) {
                   marginLeft: `-${pos.width / 2}px`,
                   marginTop: '-65px',
                   transform: loaded
-                    ? `translate(${pos.x + off.x + mousePos.x * (isMobile ? 3 : (isLeft ? 15 : -15))}px, ${pos.y + off.y + floatY + mousePos.y * (isMobile ? 2 : 5)}px) rotate(${pos.rotZ + mousePos.x * 2}deg) scale(${isDragging ? 1.1 : isSelected ? 1.4 : 1 - pos.z * 0.0005})`
-                    : `translate(0px, 40px) rotate(0deg) scale(0.8)`,
+                    ? `translate3d(${pos.x + off.x + (isMobile ? mousePos.x * 3 : (isLeft ? mousePos.x * 15 : mousePos.x * -15))}px, ${pos.y + off.y + Math.sin(timeRef.current + pos.delay * 5) * 6 + (isMobile ? mousePos.y * 2 : mousePos.y * 5)}px, 0) rotate(${pos.rotZ + mousePos.x * 2}deg) scale(${isDraggingCard ? 1.1 : isSelected ? 1.4 : 1 - pos.z * 0.0005})`
+                    : `translate3d(0px, 40px, 0) rotate(0deg) scale(0.8)`,
                   opacity: loaded ? 1 : 0,
-                  transition: isDragging ? 'opacity 0.6s ease' : isBouncing
+                  transition: isBouncing
                     ? 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease'
-                    : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease',
+                    : loaded ? 'opacity 0.6s ease' : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease',
                   transitionDelay: loaded ? '0s' : `${pos.delay}s`,
-                  zIndex: isDragging ? 300 : isSelected ? 200 : 20 + index,
-                  cursor: isDragging ? 'grabbing' : 'grab',
+                  zIndex: isDraggingCard ? 300 : isSelected ? 200 : 20 + index,
+                  cursor: isDraggingCard ? 'grabbing' : 'grab',
                   animationDelay: `${pos.delay}s`,
+                  willChange: 'transform',
+                  touchAction: 'none',
+                  WebkitTapHighlightColor: 'transparent',
                 }}
               >
                 {/* Card */}
