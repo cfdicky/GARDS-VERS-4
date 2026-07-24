@@ -36,29 +36,8 @@ export default function Navbar({ loaded }) {
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        {/* Logo */}
-        <a href="#hero" style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 700,
-          fontSize: '2rem',
-          color: 'var(--c-text)',
-          letterSpacing: '-0.02em',
-          textDecoration: 'none',
-          flexShrink: 0,
-        }}>
-          Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
-        </a>
-
-        {/* Desktop nav links */}
-        <ul className="nav-links" style={{ margin: 0 }}>
-          <li><a href="#hero">Home</a></li>
-          <li><a href="#work">Work</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-        </ul>
-
-        {/* Right side: hamburger (mobile) + Let's Talk */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+        {/* Left side: hamburger (mobile) + Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {/* Hamburger - mobile only */}
           <button
             ref={btnRef}
@@ -107,8 +86,30 @@ export default function Navbar({ loaded }) {
             }} />
           </button>
 
-          <a href="#contact" className="nav-cta" onClick={() => setMenuOpen(false)}>Let's Talk</a>
+          {/* Logo */}
+          <a href="#hero" style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: '2rem',
+            color: 'var(--c-text)',
+            letterSpacing: '-0.02em',
+            textDecoration: 'none',
+            flexShrink: 0,
+          }}>
+            Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
+          </a>
         </div>
+
+        {/* Desktop nav links */}
+        <ul className="nav-links" style={{ margin: 0 }}>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+        </ul>
+
+        {/* Let's Talk */}
+        <a href="#contact" className="nav-cta" onClick={() => setMenuOpen(false)}>Let's Talk</a>
       </div>
 
       {/* Mobile dropdown menu */}
