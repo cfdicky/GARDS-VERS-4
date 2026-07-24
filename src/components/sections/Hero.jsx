@@ -65,7 +65,12 @@ const mobileTextShadow = [
   '2px 2px 0 rgba(245,245,250,0.85)',
   '3px 3px 0 rgba(235,235,245,0.8)',
   '4px 4px 0 rgba(225,225,240,0.7)',
-  '5px 5px 8px rgba(0,0,0,0.25)',
+  '5px 5px 0 rgba(215,215,235,0.65)',
+  '6px 6px 0 rgba(205,205,230,0.6)',
+  '7px 7px 0 rgba(195,195,225,0.5)',
+  '8px 8px 0 rgba(185,185,220,0.4)',
+  '9px 9px 0 rgba(175,175,215,0.3)',
+  '10px 10px 8px rgba(0,0,0,0.2)',
 ].join(', ');
 
 export default function Hero({ loaded }) {

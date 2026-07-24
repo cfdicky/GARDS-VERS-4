@@ -33,49 +33,147 @@ export default function Navbar({ loaded }) {
         maxWidth: '1400px',
         margin: '0 auto',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'space-between',
       }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
+        {/* Logo */}
+        <a href="#hero" style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 700,
+          fontSize: '2rem',
+          color: 'var(--c-text)',
+          letterSpacing: '-0.02em',
+          textDecoration: 'none',
+          flexShrink: 0,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <button
-              ref={btnRef}
-              onClick={() => setMenuOpen(!menuOpen)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: '2rem',
-                color: 'var(--c-text)',
-                letterSpacing: '-0.02em',
-                transition: 'color 0.2s',
-              }}
-            >
-              Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
-            </button>
-            <ul className="nav-links" style={{
-              margin: 0,
-              display: menuOpen ? 'flex' : 'none',
-              gap: '2rem',
-              alignItems: 'center',
-            }}>
-              <li><a href="#hero" onClick={() => setMenuOpen(false)}>Home</a></li>
-              <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
-              <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
-              <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
-            </ul>
-          </div>
+          Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
+        </a>
+
+        {/* Desktop nav links */}
+        <ul className="nav-links" style={{ margin: 0 }}>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+        </ul>
+
+        {/* Right side: hamburger (mobile) + Let's Talk */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+          {/* Hamburger - mobile only */}
+          <button
+            ref={btnRef}
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="nav-hamburger"
+            aria-label="Menu"
+            style={{
+              display: 'none',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              gap: '5px',
+              width: '28px',
+              height: '28px',
+            }}
+          >
+            <span style={{
+              display: 'block',
+              width: '100%',
+              height: '2px',
+              background: 'var(--c-text)',
+              borderRadius: '2px',
+              transition: 'all 0.3s ease',
+              transform: menuOpen ? 'rotate(45deg) translateY(7px)' : 'none',
+            }} />
+            <span style={{
+              display: 'block',
+              width: '100%',
+              height: '2px',
+              background: 'var(--c-text)',
+              borderRadius: '2px',
+              transition: 'all 0.3s ease',
+              opacity: menuOpen ? 0 : 1,
+            }} />
+            <span style={{
+              display: 'block',
+              width: '100%',
+              height: '2px',
+              background: 'var(--c-text)',
+              borderRadius: '2px',
+              transition: 'all 0.3s ease',
+              transform: menuOpen ? 'rotate(-45deg) translateY(-7px)' : 'none',
+            }} />
+          </button>
+
           <a href="#contact" className="nav-cta" onClick={() => setMenuOpen(false)}>Let's Talk</a>
         </div>
       </div>
+
+      {/* Mobile dropdown menu */}
+      <div
+        ref={menuRef}
+        className="nav-mobile-menu"
+        style={{
+          maxHeight: menuOpen ? '300px' : '0',
+          opacity: menuOpen ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'all 0.35s cubic-bezier(0.25, 1, 0.5, 1)',
+        }}
+      >
+        <ul style={{
+          listStyle: 'none',
+          margin: 0,
+          padding: '1rem 0',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+        }}>
+          {[
+            { href: '#hero', label: 'Home' },
+            { href: '#work', label: 'Work' },
+            { href: '#about', label: 'About' },
+            { href: '#services', label: 'Services' },
+          ].map((item) => (
+            <li key={item.href}>
+              <a
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '0.6rem 0',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--c-text-dim)',
+                  textDecoration: 'none',
+                  borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  transition: 'color 0.2s',
+                }}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <style>{`
+        @media (min-width: 769px) {
+          .nav-hamburger { display: none !important; }
+          .nav-mobile-menu { display: none !important; }
+        }
+        @media (max-width: 768px) {
+          .nav-hamburger { display: flex !important; }
+          .nav-mobile-menu {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+          }
+        }
+      `}</style>
     </nav>
   );
 }

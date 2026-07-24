@@ -45,21 +45,6 @@
 .nav-fixed.scrolled {
   padding: 1rem 2rem;
 }
-.nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--c-text);
-  text-decoration: none;
-}
-.nav-logo span { color: var(--c-accent); }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 .nav-links a {
   font-size: 0.75rem;
@@ -95,6 +80,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   background: transparent;
+  white-space: nowrap;
 }
 .nav-cta:hover {
   background: var(--c-accent);
@@ -608,6 +594,7 @@
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
+  .nav-links { display: none !important; }
   .card-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   .service-tags, .service-arrow { display: none; }
   .service-row { padding: 1rem 0; }
