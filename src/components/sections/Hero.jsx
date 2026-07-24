@@ -80,6 +80,7 @@ export default function Hero({ loaded }) {
   const cardRefs = useRef({});
   const mousePosRef = useRef({ x: 0, y: 0 });
   const timeRef = useRef(0);
+  const marqueeRef = useRef(null);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -145,6 +146,21 @@ export default function Hero({ loaded }) {
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
   }, [isMobile, projectIndexMap]);
+
+  useEffect(() => {
+    const el = marqueeRef.current;
+    if (!el) return;
+    const track = el.querySelector('.marquee-track');
+    if (!track) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        track.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+      },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const activePositions = isMobile ? mobilePositions : cardPositions;
 
@@ -605,7 +621,7 @@ export default function Hero({ loaded }) {
       </section>
 
       {/* Marquee */}
-      <div style={{
+      <div ref={marqueeRef} style={{
         borderTop: '1px solid rgba(255,255,255,0.35)', borderBottom: '1px solid rgba(255,255,255,0.35)',
         padding: '1rem 0', overflow: 'hidden', background: 'rgba(255,255,255,0.02)',
       }}>
