@@ -103,12 +103,12 @@ export default function Hero({ loaded }) {
   }, [isMobile]);
 
   const cardPositions = [
-    { x: -340, y: -80, z: 40, rotZ: -2, width: 230, delay: 0 },
-    { x: -210, y: 55, z: 70, rotZ: 1.5, width: 225, delay: 0.1 },
-    { x: -70, y: -120, z: 50, rotZ: -1, width: 240, delay: 0.2 },
-    { x: 70, y: -100, z: 60, rotZ: 1, width: 235, delay: 0.3 },
-    { x: 210, y: 50, z: 80, rotZ: -1.5, width: 228, delay: 0.4 },
-    { x: 340, y: -60, z: 45, rotZ: 2, width: 232, delay: 0.5 },
+    { x: -300, y: -80, z: 40, rotZ: -1, width: 300, delay: 0 },
+    { x: 0, y: -75, z: 50, rotZ: 0.5, width: 300, delay: 0.1 },
+    { x: 300, y: -80, z: 45, rotZ: -0.5, width: 300, delay: 0.2 },
+    { x: -300, y: 70, z: 55, rotZ: 0.8, width: 300, delay: 0.3 },
+    { x: 0, y: 75, z: 60, rotZ: -0.8, width: 300, delay: 0.4 },
+    { x: 300, y: 70, z: 48, rotZ: 1, width: 300, delay: 0.5 },
   ];
 
   const mobilePositions = [
@@ -125,6 +125,7 @@ export default function Hero({ loaded }) {
   return (
     <>
       <section
+        id="hero"
         ref={sectionRef}
         style={{
           position: 'relative',
@@ -227,21 +228,21 @@ export default function Hero({ loaded }) {
         <div style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '900px',
-          height: isMobile ? '580px' : '650px',
+          maxWidth: '1200px',
+          height: isMobile ? '580px' : '750px',
           zIndex: 20,
         }}>
           {/* Central 3D Text */}
           <div style={{
             position: 'absolute',
             left: '50%',
-            top: isMobile ? '30%' : '28%',
-            marginLeft: isMobile ? '-120px' : '-300px',
-            marginTop: isMobile ? '-40px' : '-80px',
-            width: isMobile ? '240px' : '600px',
-            height: isMobile ? '80px' : '160px',
+            top: isMobile ? '18%' : '8%',
+            marginLeft: isMobile ? '-160px' : '-400px',
+            marginTop: isMobile ? '-55px' : '-110px',
+            width: isMobile ? '320px' : '800px',
+            height: isMobile ? '110px' : '220px',
             transformStyle: 'preserve-3d',
-            animation: 'gardsSpin 8s ease-in-out infinite',
+            animation: 'gardsSpin 6s ease-in-out infinite',
             zIndex: 50,
             pointerEvents: 'none',
           }}>
@@ -250,7 +251,7 @@ export default function Hero({ loaded }) {
               width: '100%',
               height: '100%',
               transformStyle: 'preserve-3d',
-              transform: `rotateX(${mousePos.y * -8}deg) rotateY(${mousePos.x * 10}deg)`,
+              transform: `rotateX(${mousePos.y * -12}deg) rotateY(${mousePos.x * 15}deg)`,
               transition: 'transform 0.15s ease-out',
               display: 'flex',
               alignItems: 'center',
@@ -260,7 +261,7 @@ export default function Hero({ loaded }) {
               <div style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
-                fontSize: isMobile ? '3rem' : '7.5rem',
+                fontSize: isMobile ? '4.5rem' : '11rem',
                 letterSpacing: '-0.05em',
                 color: '#ffffff',
                 opacity: loaded ? 1 : undefined,
@@ -284,6 +285,8 @@ export default function Hero({ loaded }) {
                   '16px 16px 0 rgba(105,105,180,0.15)',
                   '17px 17px 0 rgba(95,95,175,0.12)',
                   '18px 18px 12px rgba(0,0,0,0.25)',
+                  '20px 20px 15px rgba(0,0,0,0.2)',
+                  '25px 25px 20px rgba(0,0,0,0.15)',
                 ].join(', '),
                 whiteSpace: 'nowrap',
                 userSelect: 'none',
@@ -294,8 +297,8 @@ export default function Hero({ loaded }) {
 
             <div style={{
               position: 'absolute', top: '30%', left: '50%',
-              width: isMobile ? '200px' : '500px', height: isMobile ? '100px' : '180px',
-              marginLeft: isMobile ? '-100px' : '-250px', marginTop: isMobile ? '-50px' : '-90px',
+              width: isMobile ? '280px' : '700px', height: isMobile ? '140px' : '260px',
+              marginLeft: isMobile ? '-140px' : '-350px', marginTop: isMobile ? '-70px' : '-130px',
               background: 'radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 50%, transparent 75%)',
               filter: 'blur(50px)', pointerEvents: 'none',
               animation: 'glowPulse 4s ease-in-out infinite',
@@ -347,7 +350,7 @@ export default function Hero({ loaded }) {
           )}
 
           {/* Floating UI Cards */}
-          {projects.map((project, index) => {
+          {projects.slice(0, 6).map((project, index) => {
             const pos = activePositions[index];
             const isSelected = selectedCard === project.id;
 
@@ -734,11 +737,12 @@ export default function Hero({ loaded }) {
         }
 
         @keyframes gardsSpin {
-          0% { transform: rotateY(0deg) rotateX(0deg); }
-          25% { transform: rotateY(15deg) rotateX(5deg); }
-          50% { transform: rotateY(0deg) rotateX(0deg); }
-          75% { transform: rotateY(-15deg) rotateX(-5deg); }
-          100% { transform: rotateY(0deg) rotateX(0deg); }
+          0% { transform: rotateY(0deg) rotateX(0deg) scale(1); }
+          20% { transform: rotateY(20deg) rotateX(8deg) scale(1.05); }
+          40% { transform: rotateY(-15deg) rotateX(-5deg) scale(0.95); }
+          60% { transform: rotateY(10deg) rotateX(-10deg) scale(1.02); }
+          80% { transform: rotateY(-20deg) rotateX(5deg) scale(0.98); }
+          100% { transform: rotateY(0deg) rotateX(0deg) scale(1); }
         }
 
         @keyframes glowPulse {

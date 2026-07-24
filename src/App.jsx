@@ -3,8 +3,8 @@ import Navbar from './components/sections/Navbar';
 import Hero from './components/sections/Hero';
 import Portfolio from './components/sections/Portfolio';
 
+const About = lazy(() => import('./components/sections/About'));
 const Services = lazy(() => import('./components/sections/Services'));
-const Testimonials = lazy(() => import('./components/sections/Testimonials'));
 const CTA = lazy(() => import('./components/sections/CTA'));
 const Footer = lazy(() => import('./components/sections/Footer'));
 
@@ -23,8 +23,8 @@ function App() {
         <Hero loaded={loaded} />
         <Portfolio />
         <Suspense fallback={null}>
+          <About />
           <Services />
-          <Testimonials />
           <CTA />
         </Suspense>
       </main>

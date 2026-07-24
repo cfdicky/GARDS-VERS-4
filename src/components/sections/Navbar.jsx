@@ -4,14 +4,13 @@ export default function Navbar({ loaded }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const btnRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  const btnRef = useRef(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -37,7 +36,6 @@ export default function Navbar({ loaded }) {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-        {/* Centered Gards logo */}
         <button
           ref={btnRef}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -57,7 +55,6 @@ export default function Navbar({ loaded }) {
           Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
         </button>
 
-        {/* Links dropdown */}
         <div
           ref={menuRef}
           style={{
@@ -72,10 +69,10 @@ export default function Navbar({ loaded }) {
           }}
         >
           <ul className="nav-links" style={{ margin: 0 }}>
+            <li><a href="#hero" onClick={() => setMenuOpen(false)}>Home</a></li>
             <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
-            <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
             <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
-            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a></li>
+            <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
           </ul>
           <a href="#contact" className="nav-cta" onClick={() => setMenuOpen(false)}>Let's Talk</a>
         </div>
