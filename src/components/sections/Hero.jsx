@@ -1,5 +1,4 @@
-
-/*  */import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { projects, marqueeText } from '../../tokens/design-system';
 
 function generateStars(count) {
@@ -18,12 +17,64 @@ function generateStars(count) {
   return stars;
 }
 
+const cardPositions = [
+  { x: -300, y: -80, z: 40, rotZ: -1, width: 300, delay: 0 },
+  { x: 0, y: -75, z: 50, rotZ: 0.5, width: 300, delay: 0.1 },
+  { x: 300, y: -80, z: 45, rotZ: -0.5, width: 300, delay: 0.2 },
+  { x: -300, y: 70, z: 55, rotZ: 0.8, width: 300, delay: 0.3 },
+  { x: 0, y: 75, z: 60, rotZ: -0.8, width: 300, delay: 0.4 },
+  { x: 300, y: 70, z: 48, rotZ: 1, width: 300, delay: 0.5 },
+];
+
+const mobilePositions = [
+  { x: -80, y: -55, z: 20, rotZ: -2, width: 132, delay: 0 },
+  { x: 80, y: -50, z: 30, rotZ: 1.5, width: 128, delay: 0.1 },
+  { x: -80, y: 25, z: 25, rotZ: 1, width: 134, delay: 0.2 },
+  { x: 80, y: 30, z: 35, rotZ: -1.5, width: 130, delay: 0.3 },
+  { x: -80, y: 105, z: 40, rotZ: -1, width: 126, delay: 0.4 },
+  { x: 80, y: 110, z: 22, rotZ: 2, width: 133, delay: 0.5 },
+];
+
+const heroProjects = projects.slice(0, 6);
+
+const desktopTextShadow = [
+  '1px 1px 0 rgba(255,255,255,0.9)',
+  '2px 2px 0 rgba(245,245,250,0.85)',
+  '3px 3px 0 rgba(235,235,245,0.8)',
+  '4px 4px 0 rgba(225,225,240,0.75)',
+  '5px 5px 0 rgba(215,215,235,0.7)',
+  '6px 6px 0 rgba(205,205,230,0.65)',
+  '7px 7px 0 rgba(195,195,225,0.6)',
+  '8px 8px 0 rgba(185,185,220,0.55)',
+  '9px 9px 0 rgba(175,175,215,0.5)',
+  '10px 10px 0 rgba(165,165,210,0.45)',
+  '11px 11px 0 rgba(155,155,205,0.4)',
+  '12px 12px 0 rgba(145,145,200,0.35)',
+  '13px 13px 0 rgba(135,135,195,0.3)',
+  '14px 14px 0 rgba(125,125,190,0.25)',
+  '15px 15px 0 rgba(115,115,185,0.2)',
+  '16px 16px 0 rgba(105,105,180,0.15)',
+  '17px 17px 0 rgba(95,95,175,0.12)',
+  '18px 18px 12px rgba(0,0,0,0.25)',
+  '20px 20px 15px rgba(0,0,0,0.2)',
+  '25px 25px 20px rgba(0,0,0,0.15)',
+].join(', ');
+
+const mobileTextShadow = [
+  '1px 1px 0 rgba(255,255,255,0.9)',
+  '2px 2px 0 rgba(245,245,250,0.85)',
+  '3px 3px 0 rgba(235,235,245,0.8)',
+  '4px 4px 0 rgba(225,225,240,0.7)',
+  '5px 5px 8px rgba(0,0,0,0.25)',
+].join(', ');
+
 export default function Hero({ loaded }) {
   const [selectedCard, setSelectedCard] = useState(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
   const cardRefs = useRef({});
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const timeRef = useRef(0);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -33,38 +84,34 @@ export default function Hero({ loaded }) {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  const isMobileInit = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-  const stars = useMemo(() => generateStars(isMobileInit ? 40 : 120), []);
+  const projectIndexMap = useMemo(() => {
+    const map = {};
+    heroProjects.forEach((p, i) => { map[p.id] = i; });
+    return map;
+  }, []);
 
-  const mousePosRef = useRef({ x: 0, y: 0 });
+  const stars = useMemo(() => {
+    const isMobileInit = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    return generateStars(isMobileInit ? 20 : 100);
+  }, []);
 
   useEffect(() => {
-    let rafId;
     const handleMouseMove = (e) => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      mousePosRef.current = { x, y };
-      if (!isMobile) {
-        cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => setMousePos({ x, y }));
-      }
+      mousePosRef.current = {
+        x: ((e.clientX - rect.left) / rect.width - 0.5) * 2,
+        y: ((e.clientY - rect.top) / rect.height - 0.5) * 2,
+      };
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(rafId);
-    };
-  }, [isMobile]);
-
-  const timeRef = useRef(0);
-  const [, forceUpdate] = useState(0);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     let frame;
     let lastUpdate = 0;
-    const targetFPS = isMobile ? 30 : 60;
+    const targetFPS = isMobile ? 24 : 60;
     const interval = 1000 / targetFPS;
 
     const animate = (timestamp) => {
@@ -77,48 +124,22 @@ export default function Hero({ loaded }) {
         for (const id in cards) {
           const el = cards[id];
           if (!el) continue;
-          const idx = projects.findIndex((p) => p.id === id);
-          if (idx === -1) continue;
+          const idx = projectIndexMap[id];
+          if (idx === undefined) continue;
           const pos = activePos[idx];
-          const floatAmp = isMobile ? 8 : 6;
-          const floatY = Math.sin(timeRef.current + pos.delay * 5) * floatAmp;
+          const floatY = Math.sin(timeRef.current + pos.delay * 5) * (isMobile ? 8 : 6);
           const mpX = mousePosRef.current.x;
           const mpY = mousePosRef.current.y;
-          const isLeft = pos.x < 0;
-          const parallaxX = isMobile ? mpX * 3 : (isLeft ? mpX * 12 : mpX * -12);
+          const parallaxX = isMobile ? mpX * 3 : (pos.x < 0 ? mpX * 12 : mpX * -12);
           const parallaxY = isMobile ? mpY * 2 : mpY * 4;
-          const tx = pos.x + parallaxX;
-          const ty = pos.y + floatY + parallaxY;
-          const rz = pos.rotZ + mpX * 1.5;
-          const sc = 1 - pos.z * 0.0005;
-          el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rz}deg) scale(${sc})`;
+          el.style.transform = `translate3d(${pos.x + parallaxX}px, ${pos.y + floatY + parallaxY}px, 0) rotate(${pos.rotZ + mpX * 1.5}deg) scale(${1 - pos.z * 0.0005})`;
         }
-
-        forceUpdate((n) => n + 1);
       }
       frame = requestAnimationFrame(animate);
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [isMobile]);
-
-  const cardPositions = [
-    { x: -300, y: -80, z: 40, rotZ: -1, width: 300, delay: 0 },
-    { x: 0, y: -75, z: 50, rotZ: 0.5, width: 300, delay: 0.1 },
-    { x: 300, y: -80, z: 45, rotZ: -0.5, width: 300, delay: 0.2 },
-    { x: -300, y: 70, z: 55, rotZ: 0.8, width: 300, delay: 0.3 },
-    { x: 0, y: 75, z: 60, rotZ: -0.8, width: 300, delay: 0.4 },
-    { x: 300, y: 70, z: 48, rotZ: 1, width: 300, delay: 0.5 },
-  ];
-
-  const mobilePositions = [
-    { x: -80, y: -55, z: 20, rotZ: -2, width: 132, delay: 0 },
-    { x: 80, y: -50, z: 30, rotZ: 1.5, width: 128, delay: 0.1 },
-    { x: -80, y: 25, z: 25, rotZ: 1, width: 134, delay: 0.2 },
-    { x: 80, y: 30, z: 35, rotZ: -1.5, width: 130, delay: 0.3 },
-    { x: -80, y: 105, z: 40, rotZ: -1, width: 126, delay: 0.4 },
-    { x: 80, y: 110, z: 22, rotZ: 2, width: 133, delay: 0.5 },
-  ];
+  }, [isMobile, projectIndexMap]);
 
   const activePositions = isMobile ? mobilePositions : cardPositions;
 
@@ -147,6 +168,7 @@ export default function Hero({ loaded }) {
           backgroundColor: '#030308',
           opacity: loaded ? 1 : 0,
           transition: 'opacity 1s ease',
+          contain: 'strict',
         }}>
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
             {stars.map((s) => (
@@ -163,54 +185,74 @@ export default function Hero({ loaded }) {
                     ? 'radial-gradient(circle, #fff 0%, rgba(200,220,255,0.8) 50%, transparent 100%)'
                     : 'white',
                   boxShadow: s.size > 2.5
-                    ? `0 0 ${s.size * 3}px ${s.size}px rgba(255,255,255,0.4), 0 0 ${s.size * 6}px ${s.size * 2}px rgba(200,220,255,0.15)`
-                    : `0 0 ${s.size * 2}px ${s.size * 0.5}px rgba(255,255,255,0.3)`,
+                    ? `0 0 ${s.size * 3}px ${s.size}px rgba(255,255,255,0.4)`
+                    : 'none',
                   opacity: s.opacity,
                   animation: `starTwinkle ${s.duration}s ease-in-out ${s.delay}s infinite alternate`,
+                  willChange: 'transform, opacity',
                 }}
               />
             ))}
           </div>
 
-          <div className="meteor meteor-1" />
-          <div className="meteor meteor-2" />
-          <div className="meteor meteor-3" />
-          <div className="meteor meteor-4" />
-          <div className="meteor meteor-5" />
+          {isMobile ? (
+            <>
+              <div className="meteor meteor-1" />
+              <div className="meteor meteor-2" />
+            </>
+          ) : (
+            <>
+              <div className="meteor meteor-1" />
+              <div className="meteor meteor-2" />
+              <div className="meteor meteor-3" />
+              <div className="meteor meteor-4" />
+              <div className="meteor meteor-5" />
+            </>
+          )}
 
           <div style={{
             position: 'absolute', top: '-15%', left: '-10%', width: '70%', height: '70%',
             background: 'radial-gradient(ellipse at 40% 50%, rgba(30,20,80,0.6) 0%, rgba(15,10,60,0.3) 40%, transparent 70%)',
-            filter: 'blur(60px)',
-            animation: 'nebulaDrift1 40s ease-in-out infinite, nebulaHue1 25s ease-in-out infinite',
+            filter: isMobile ? 'blur(40px)' : 'blur(60px)',
+            animation: isMobile
+              ? 'nebulaDrift1 50s ease-in-out infinite, nebulaHue1Mobile 35s ease-in-out infinite'
+              : 'nebulaDrift1 40s ease-in-out infinite, nebulaHue1 25s ease-in-out infinite',
           }} />
           <div style={{
             position: 'absolute', top: '10%', right: '-5%', width: '60%', height: '60%',
             background: 'radial-gradient(ellipse at 60% 40%, rgba(80,20,100,0.4) 0%, rgba(50,10,80,0.2) 45%, transparent 70%)',
-            filter: 'blur(80px)',
-            animation: 'nebulaDrift2 55s ease-in-out infinite, nebulaHue2 30s ease-in-out infinite',
+            filter: isMobile ? 'blur(50px)' : 'blur(80px)',
+            animation: isMobile
+              ? 'nebulaDrift2 65s ease-in-out infinite, nebulaHue2Mobile 40s ease-in-out infinite'
+              : 'nebulaDrift2 55s ease-in-out infinite, nebulaHue2 30s ease-in-out infinite',
           }} />
           <div style={{
             position: 'absolute', bottom: '-10%', left: '5%', width: '55%', height: '55%',
             background: 'radial-gradient(ellipse at 50% 60%, rgba(10,60,80,0.35) 0%, rgba(5,30,50,0.15) 45%, transparent 70%)',
-            filter: 'blur(70px)',
-            animation: 'nebulaDrift3 50s ease-in-out infinite, nebulaHue3 20s ease-in-out infinite',
+            filter: isMobile ? 'blur(45px)' : 'blur(70px)',
+            animation: isMobile
+              ? 'nebulaDrift3 60s ease-in-out infinite, nebulaHue3Mobile 30s ease-in-out infinite'
+              : 'nebulaDrift3 50s ease-in-out infinite, nebulaHue3 20s ease-in-out infinite',
           }} />
-          <div style={{
-            position: 'absolute', top: '-5%', right: '15%', width: '50%', height: '50%',
-            background: 'radial-gradient(ellipse at 55% 45%, rgba(60,10,90,0.3) 0%, rgba(30,5,60,0.15) 40%, transparent 65%)',
-            filter: 'blur(90px)',
-            animation: 'nebulaDrift4 60s ease-in-out infinite, nebulaHue4 35s ease-in-out infinite',
-          }} />
-          <div style={{
-            position: 'absolute', top: '30%', left: '35%', width: '30%', height: '40%',
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(100,60,120,0.12) 0%, transparent 60%)',
-            filter: 'blur(50px)',
-            animation: 'nebulaGlow 8s ease-in-out infinite, nebulaHueCentral 18s ease-in-out infinite',
-          }} />
+          {!isMobile && (
+            <>
+              <div style={{
+                position: 'absolute', top: '-5%', right: '15%', width: '50%', height: '50%',
+                background: 'radial-gradient(ellipse at 55% 45%, rgba(60,10,90,0.3) 0%, rgba(30,5,60,0.15) 40%, transparent 65%)',
+                filter: 'blur(90px)',
+                animation: 'nebulaDrift4 60s ease-in-out infinite',
+              }} />
+              <div style={{
+                position: 'absolute', top: '30%', left: '35%', width: '30%', height: '40%',
+                background: 'radial-gradient(ellipse at 50% 50%, rgba(100,60,120,0.12) 0%, transparent 60%)',
+                filter: 'blur(50px)',
+                animation: 'nebulaGlow 8s ease-in-out infinite',
+              }} />
+            </>
+          )}
         </div>
 
-      {/* Blur overlay seluruh halaman saat kartu dipilih */}
+        {/* Blur overlay saat kartu dipilih */}
         {selectedCard && (
           <div style={{
             position: 'absolute',
@@ -224,7 +266,7 @@ export default function Hero({ loaded }) {
           }} />
         )}
 
-      {/* 3D Scene */}
+        {/* 3D Scene */}
         <div style={{
           position: 'relative',
           width: '100%',
@@ -245,14 +287,14 @@ export default function Hero({ loaded }) {
             animation: 'gardsSpin 6s ease-in-out infinite',
             zIndex: 50,
             pointerEvents: 'none',
+            willChange: 'transform',
           }}>
             <div style={{
               position: 'relative',
               width: '100%',
               height: '100%',
               transformStyle: 'preserve-3d',
-              transform: `rotateX(${mousePos.y * -12}deg) rotateY(${mousePos.x * 15}deg)`,
-              transition: 'transform 0.15s ease-out',
+              transform: `rotateX(${mousePosRef.current.y * -12}deg) rotateY(${mousePosRef.current.x * 15}deg)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -266,28 +308,7 @@ export default function Hero({ loaded }) {
                 color: '#ffffff',
                 opacity: loaded ? 1 : undefined,
                 animation: loaded ? undefined : 'gardsPulse 1.5s ease-in-out infinite',
-                textShadow: [
-                  '1px 1px 0 rgba(255,255,255,0.9)',
-                  '2px 2px 0 rgba(245,245,250,0.85)',
-                  '3px 3px 0 rgba(235,235,245,0.8)',
-                  '4px 4px 0 rgba(225,225,240,0.75)',
-                  '5px 5px 0 rgba(215,215,235,0.7)',
-                  '6px 6px 0 rgba(205,205,230,0.65)',
-                  '7px 7px 0 rgba(195,195,225,0.6)',
-                  '8px 8px 0 rgba(185,185,220,0.55)',
-                  '9px 9px 0 rgba(175,175,215,0.5)',
-                  '10px 10px 0 rgba(165,165,210,0.45)',
-                  '11px 11px 0 rgba(155,155,205,0.4)',
-                  '12px 12px 0 rgba(145,145,200,0.35)',
-                  '13px 13px 0 rgba(135,135,195,0.3)',
-                  '14px 14px 0 rgba(125,125,190,0.25)',
-                  '15px 15px 0 rgba(115,115,185,0.2)',
-                  '16px 16px 0 rgba(105,105,180,0.15)',
-                  '17px 17px 0 rgba(95,95,175,0.12)',
-                  '18px 18px 12px rgba(0,0,0,0.25)',
-                  '20px 20px 15px rgba(0,0,0,0.2)',
-                  '25px 25px 20px rgba(0,0,0,0.15)',
-                ].join(', '),
+                textShadow: isMobile ? mobileTextShadow : desktopTextShadow,
                 whiteSpace: 'nowrap',
                 userSelect: 'none',
               }}>
@@ -306,51 +327,41 @@ export default function Hero({ loaded }) {
             }} />
 
             <div style={{
-              position: 'absolute', top: '-20px', right: '-30px', width: '10px', height: '10px', borderRadius: '50%',
+              position: 'absolute', top: '-20px', right: '-30px', width: isMobile ? '7px' : '10px', height: isMobile ? '7px' : '10px', borderRadius: '50%',
               background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.3))',
-              boxShadow: '0 0 15px rgba(255,255,255,0.5)',
+              boxShadow: isMobile ? '0 0 10px rgba(255,255,255,0.3)' : '0 0 15px rgba(255,255,255,0.5)',
               animation: 'floatParticle 3s ease-in-out infinite',
               opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.5s',
             }} />
             <div style={{
-              position: 'absolute', bottom: '-25px', left: '-40px', width: '8px', height: '8px', borderRadius: '50%',
+              position: 'absolute', bottom: '-25px', left: '-40px', width: isMobile ? '6px' : '8px', height: isMobile ? '6px' : '8px', borderRadius: '50%',
               background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.2))',
-              boxShadow: '0 0 12px rgba(255,255,255,0.4)',
+              boxShadow: isMobile ? '0 0 8px rgba(255,255,255,0.2)' : '0 0 12px rgba(255,255,255,0.4)',
               animation: 'floatParticle 4s ease-in-out infinite reverse',
               opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.6s',
             }} />
-            <div style={{
-              position: 'absolute', top: '20px', left: '-50px', width: '6px', height: '6px', borderRadius: '50%',
-              background: 'radial-gradient(circle at 30% 30%, #ffffff, rgba(255,255,255,0.4))',
-              boxShadow: '0 0 10px rgba(255,255,255,0.4)',
-              animation: 'floatParticle 3.5s ease-in-out infinite 0.5s',
-              opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.7s',
-            }} />
-            <div style={{
-              position: 'absolute', top: '-15px', left: '40px', width: '5px', height: '5px', borderRadius: '50%',
-              background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.3))',
-              boxShadow: '0 0 8px rgba(255,255,255,0.3)',
-              animation: 'floatParticle 2.8s ease-in-out infinite 1s',
-              opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.8s',
-            }} />
+            {!isMobile && (
+              <>
+                <div style={{
+                  position: 'absolute', top: '20px', left: '-50px', width: '6px', height: '6px', borderRadius: '50%',
+                  background: 'radial-gradient(circle at 30% 30%, #ffffff, rgba(255,255,255,0.4))',
+                  boxShadow: '0 0 10px rgba(255,255,255,0.4)',
+                  animation: 'floatParticle 3.5s ease-in-out infinite 0.5s',
+                  opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.7s',
+                }} />
+                <div style={{
+                  position: 'absolute', top: '-15px', left: '40px', width: '5px', height: '5px', borderRadius: '50%',
+                  background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.3))',
+                  boxShadow: '0 0 8px rgba(255,255,255,0.3)',
+                  animation: 'floatParticle 2.8s ease-in-out infinite 1s',
+                  opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.8s',
+                }} />
+              </>
+            )}
           </div>
 
-          {/* Loading bar */}
-          {!loaded && (
-            <div style={{
-              position: 'absolute', left: '50%', top: '62%', transform: 'translateX(-50%)',
-              width: '120px', height: '2px', background: 'rgba(255,255,255,0.08)',
-              borderRadius: '2px', overflow: 'hidden', zIndex: 60,
-            }}>
-              <div style={{
-                height: '100%', background: 'var(--c-accent)', borderRadius: '2px',
-                animation: 'loadingBarFill 0.8s cubic-bezier(0.25,1,0.5,1) forwards',
-              }} />
-            </div>
-          )}
-
           {/* Floating UI Cards */}
-          {projects.slice(0, 6).map((project, index) => {
+          {heroProjects.map((project, index) => {
             const pos = activePositions[index];
             const isSelected = selectedCard === project.id;
 
@@ -366,13 +377,8 @@ export default function Hero({ loaded }) {
                   width: `${pos.width}px`,
                   marginLeft: `-${pos.width / 2}px`,
                   marginTop: isMobile ? '-40px' : '-55px',
-                  transform: loaded
-                    ? `translate3d(${pos.x + (isMobile ? mousePos.x * 3 : (pos.x < 0 ? mousePos.x * 12 : mousePos.x * -12))}px, ${pos.y + Math.sin(timeRef.current + pos.delay * 5) * 6 + (isMobile ? mousePos.y * 2 : mousePos.y * 4)}px, 0) rotate(${pos.rotZ + mousePos.x * 1.5}deg) scale(${isSelected ? 1.15 : 1 - pos.z * 0.0005})`
-                    : `translate3d(0px, 40px, 0) rotate(0deg) scale(0.8)`,
                   opacity: loaded ? 1 : 0,
-                  transition: loaded
-                    ? 'transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.6s ease'
-                    : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease',
+                  transition: 'opacity 0.6s ease',
                   transitionDelay: loaded ? '0s' : `${pos.delay}s`,
                   zIndex: isSelected ? 200 : 20 + index,
                   cursor: 'pointer',
@@ -380,6 +386,11 @@ export default function Hero({ loaded }) {
                   WebkitTapHighlightColor: 'transparent',
                 }}
               >
+                {/* Selection scale wrapper */}
+                <div style={{
+                  transform: isSelected ? 'scale(1.15)' : 'scale(1)',
+                  transition: 'transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)',
+                }}>
                 {/* Card */}
                 <div style={{
                   background: 'rgba(18, 18, 28, 0.95)',
@@ -519,6 +530,7 @@ export default function Hero({ loaded }) {
                     </button>
                   </div>
                 )}
+                </div>
               </div>
             );
           })}
@@ -530,7 +542,7 @@ export default function Hero({ loaded }) {
           padding: isMobile ? '0 1rem' : undefined,
           color: 'rgba(255,255,255,0.25)', fontSize: isMobile ? '0.6rem' : '0.6875rem',
           fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
-          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 0.8s',
+          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.8s ease 1.2s',
         }}>
           {selectedCard ? 'Click another card or ✕ to close' : 'Click a card to view details'}
         </div>
@@ -540,7 +552,7 @@ export default function Hero({ loaded }) {
           textAlign: 'center', maxWidth: '600px',
           marginTop: isMobile ? '6rem' : '8rem',
           padding: isMobile ? '0 1rem' : undefined,
-          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 1s',
+          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.8s ease 1.5s',
         }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
@@ -562,7 +574,7 @@ export default function Hero({ loaded }) {
           display: 'flex', gap: isMobile ? '2rem' : '4rem',
           marginTop: isMobile ? '3rem' : '4rem', paddingTop: '2rem',
           borderTop: '1px solid rgba(255,255,255,0.06)',
-          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 1.2s',
+          zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.8s ease 1.8s',
         }}>
           {[
             { value: '120+', label: 'Projects' },
@@ -632,9 +644,9 @@ export default function Hero({ loaded }) {
           box-shadow:
             0 0 8px 3px rgba(255,255,255,1),
             0 0 20px 6px rgba(255,255,255,0.6),
-            0 0 40px 12px rgba(200,220,255,0.3),
-            0 0 60px 20px rgba(180,200,255,0.1);
+            0 0 40px 12px rgba(200,220,255,0.3);
           opacity: 0; pointer-events: none; transform: rotate(35deg);
+          will-change: transform, opacity;
         }
 
         .meteor::before {
@@ -723,17 +735,19 @@ export default function Hero({ loaded }) {
           90% { filter: blur(71px) hue-rotate(10deg) brightness(1.05); }
         }
 
-        @keyframes nebulaHue4 {
-          0%, 100% { filter: blur(90px) hue-rotate(0deg) brightness(1); }
-          40% { filter: blur(95px) hue-rotate(35deg) brightness(1.1); }
-          70% { filter: blur(85px) hue-rotate(-25deg) brightness(0.9); }
+        @keyframes nebulaHue1Mobile {
+          0%, 100% { opacity: 0.7; filter: blur(40px) hue-rotate(0deg); }
+          50% { opacity: 1; filter: blur(40px) hue-rotate(25deg); }
         }
 
-        @keyframes nebulaHueCentral {
-          0%, 100% { filter: blur(50px) hue-rotate(0deg) brightness(1); }
-          25% { filter: blur(55px) hue-rotate(60deg) brightness(1.3); }
-          50% { filter: blur(48px) hue-rotate(-40deg) brightness(0.8); }
-          75% { filter: blur(52px) hue-rotate(20deg) brightness(1.2); }
+        @keyframes nebulaHue2Mobile {
+          0%, 100% { opacity: 0.6; filter: blur(50px) hue-rotate(0deg); }
+          50% { opacity: 0.9; filter: blur(50px) hue-rotate(-20deg); }
+        }
+
+        @keyframes nebulaHue3Mobile {
+          0%, 100% { opacity: 0.5; filter: blur(45px) hue-rotate(0deg); }
+          50% { opacity: 0.8; filter: blur(45px) hue-rotate(15deg); }
         }
 
         @keyframes gardsSpin {

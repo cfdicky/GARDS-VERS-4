@@ -36,44 +36,43 @@ export default function Navbar({ loaded }) {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-        <button
-          ref={btnRef}
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0,
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: '2rem',
-            color: 'var(--c-text)',
-            letterSpacing: '-0.02em',
-            transition: 'color 0.2s',
-          }}
-        >
-          Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
-        </button>
-
-        <div
-          ref={menuRef}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2rem',
-            maxHeight: menuOpen ? '60px' : '0',
-            opacity: menuOpen ? 1 : 0,
-            overflow: 'hidden',
-            transition: 'all 0.35s cubic-bezier(0.25, 1, 0.5, 1)',
-            marginTop: menuOpen ? '1rem' : '0',
-          }}
-        >
-          <ul className="nav-links" style={{ margin: 0 }}>
-            <li><a href="#hero" onClick={() => setMenuOpen(false)}>Home</a></li>
-            <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
-            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
-            <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
-          </ul>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+            <button
+              ref={btnRef}
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: '2rem',
+                color: 'var(--c-text)',
+                letterSpacing: '-0.02em',
+                transition: 'color 0.2s',
+              }}
+            >
+              Gards<span style={{ color: 'var(--c-accent)' }}>.</span>
+            </button>
+            <ul className="nav-links" style={{
+              margin: 0,
+              display: menuOpen ? 'flex' : 'none',
+              gap: '2rem',
+              alignItems: 'center',
+            }}>
+              <li><a href="#hero" onClick={() => setMenuOpen(false)}>Home</a></li>
+              <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
+              <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
+              <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
+            </ul>
+          </div>
           <a href="#contact" className="nav-cta" onClick={() => setMenuOpen(false)}>Let's Talk</a>
         </div>
       </div>

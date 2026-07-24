@@ -107,6 +107,7 @@
   display: flex;
   width: fit-content;
   animation: marqueeScroll 25s linear infinite;
+  will-change: transform;
 }
 .marquee-track:hover { animation-play-state: paused; }
 .marquee-content {
@@ -134,7 +135,7 @@
 }
 
 /* ===== SECTIONS ===== */
-.section { padding: 8rem 0; }
+.section { padding: 8rem 0; contain: layout style; content-visibility: auto; }
 .section-header {
   display: flex;
   flex-direction: column;
@@ -607,7 +608,6 @@
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  .nav-cta { display: none; }
   .card-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   .service-tags, .service-arrow { display: none; }
   .service-row { padding: 1rem 0; }
@@ -620,7 +620,7 @@
   .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
   .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
   .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
-  .section { padding: 5rem 0; }
+  .section { padding: 5rem 0; contain: layout style; }
   .section-header { margin-bottom: 2.5rem; }
   .container-main { padding: 0 1.25rem; }
 
