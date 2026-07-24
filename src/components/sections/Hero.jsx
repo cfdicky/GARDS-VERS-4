@@ -209,13 +209,27 @@ export default function Hero({ loaded }) {
           }} />
         </div>
 
+      {/* Blur overlay seluruh halaman saat kartu dipilih */}
+        {selectedCard && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 15,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            background: 'rgba(3, 3, 8, 0.4)',
+            transition: 'all 0.4s ease',
+            pointerEvents: 'none',
+          }} />
+        )}
+
       {/* 3D Scene */}
         <div style={{
           position: 'relative',
           width: '100%',
           maxWidth: '900px',
           height: isMobile ? '580px' : '650px',
-          zIndex: 1,
+          zIndex: 20,
         }}>
           {/* Central 3D Text */}
           <div style={{
