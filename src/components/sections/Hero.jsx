@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+
+/*  */import { useState, useEffect, useRef, useMemo } from 'react';
 import { projects, marqueeText } from '../../tokens/design-system';
 
 function generateStars(count) {
@@ -127,12 +128,12 @@ export default function Hero({ loaded }) {
         ref={sectionRef}
         style={{
           position: 'relative',
-          minHeight: '100vh',
+          minHeight: '130vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: isMobile ? '5.5rem 1rem 1.5rem' : '8rem 2rem 4rem',
+          padding: isMobile ? '5.5rem 1rem 4rem' : '8rem 2rem 6rem',
           overflow: 'hidden',
         }}
       >
@@ -213,14 +214,14 @@ export default function Hero({ loaded }) {
           position: 'relative',
           width: '100%',
           maxWidth: '900px',
-          height: isMobile ? '380px' : '480px',
+          height: isMobile ? '580px' : '650px',
           zIndex: 1,
         }}>
           {/* Central 3D Text */}
           <div style={{
             position: 'absolute',
             left: '50%',
-            top: '50%',
+            top: isMobile ? '30%' : '28%',
             marginLeft: isMobile ? '-120px' : '-300px',
             marginTop: isMobile ? '-40px' : '-80px',
             width: isMobile ? '240px' : '600px',
@@ -278,7 +279,7 @@ export default function Hero({ loaded }) {
             </div>
 
             <div style={{
-              position: 'absolute', top: '50%', left: '50%',
+              position: 'absolute', top: '30%', left: '50%',
               width: isMobile ? '200px' : '500px', height: isMobile ? '100px' : '180px',
               marginLeft: isMobile ? '-100px' : '-250px', marginTop: isMobile ? '-50px' : '-90px',
               background: 'radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 50%, transparent 75%)',
@@ -344,7 +345,7 @@ export default function Hero({ loaded }) {
                 style={{
                   position: 'absolute',
                   left: '50%',
-                  top: '50%',
+                  top: isMobile ? '62%' : '52%',
                   width: `${pos.width}px`,
                   marginLeft: `-${pos.width / 2}px`,
                   marginTop: isMobile ? '-40px' : '-55px',
@@ -508,7 +509,7 @@ export default function Hero({ loaded }) {
 
         {/* Instruction */}
         <div style={{
-          textAlign: 'center', marginTop: isMobile ? '0.5rem' : '1rem',
+          textAlign: 'center', marginTop: isMobile ? '2rem' : '3rem',
           padding: isMobile ? '0 1rem' : undefined,
           color: 'rgba(255,255,255,0.25)', fontSize: isMobile ? '0.6rem' : '0.6875rem',
           fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
@@ -520,7 +521,7 @@ export default function Hero({ loaded }) {
         {/* Tagline & Description */}
         <div style={{
           textAlign: 'center', maxWidth: '600px',
-          marginTop: isMobile ? '1.5rem' : '2.5rem',
+          marginTop: isMobile ? '6rem' : '8rem',
           padding: isMobile ? '0 1rem' : undefined,
           zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 1s',
         }}>
@@ -542,7 +543,7 @@ export default function Hero({ loaded }) {
         {/* Stats */}
         <div style={{
           display: 'flex', gap: isMobile ? '2rem' : '4rem',
-          marginTop: isMobile ? '2rem' : '3rem', paddingTop: '2rem',
+          marginTop: isMobile ? '3rem' : '4rem', paddingTop: '2rem',
           borderTop: '1px solid rgba(255,255,255,0.06)',
           zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.6s ease 1.2s',
         }}>
