@@ -13,8 +13,11 @@ function LoadingScreen({ onDone }) {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
     const start = Date.now();
-    const duration = 1500;
+    const duration = 2000;
     const tick = () => {
       const elapsed = Date.now() - start;
       const p = Math.min(elapsed / duration, 1);
@@ -24,11 +27,25 @@ function LoadingScreen({ onDone }) {
       } else {
         setTimeout(() => {
           setExiting(true);
-          setTimeout(onDone, 500);
+          setTimeout(() => {
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            requestAnimationFrame(() => {
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              onDone();
+            });
+          }, 300);
         }, 200);
       }
     };
     requestAnimationFrame(tick);
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
   }, [onDone]);
 
   return (
@@ -87,10 +104,21 @@ function LoadingScreen({ onDone }) {
 
 function App() {
   const [loaded, setLoaded] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
+
+  useEffect(() => {
+    document.fonts.ready.then(() => setFontsReady(true));
+  }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, [loaded]);
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--c-bg)', position: 'relative', zIndex: 1 }}>
-      {!loaded && <LoadingScreen onDone={() => setLoaded(true)} />}
+      {fontsReady && !loaded && <LoadingScreen onDone={() => setLoaded(true)} />}
       <Navbar loaded={loaded} />
       <main>
         <Hero loaded={loaded} />

@@ -116,6 +116,7 @@ export default function Portfolio() {
   }, []);
 
   return (
+    <>
     <section id="work" className="section" style={{ background: 'var(--c-bg)' }}>
       <div className="container-main">
         <div className="section-header" style={{ alignItems: 'center', textAlign: 'center' }}>
@@ -224,7 +225,9 @@ export default function Portfolio() {
         </div>
       </div>
 
-      {/* Project Modal */}
+      </section>
+
+      {/* Project Modal - outside section to avoid content-visibility:auto */}
       {activeProject && (
         <div className="project-modal" onClick={closeProject}>
           <div className="project-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -275,6 +278,6 @@ export default function Portfolio() {
           </div>
         </div>
       )}
-    </section>
+    </>
   );
 }

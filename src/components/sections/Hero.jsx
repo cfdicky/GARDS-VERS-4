@@ -171,7 +171,7 @@ export default function Hero({ loaded }) {
         ref={sectionRef}
         style={{
           position: 'relative',
-          minHeight: '130vh',
+          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -385,7 +385,16 @@ export default function Hero({ loaded }) {
             const pos = activePositions[index];
             const isSelected = selectedCard === project.id;
 
-            return (
+  if (!loaded) {
+    return (
+      <section id="hero" style={{
+        minHeight: '100vh',
+        background: '#030308',
+      }} />
+    );
+  }
+
+  return (
               <div
                 key={project.id}
                 ref={(el) => { cardRefs.current[project.id] = el; }}
