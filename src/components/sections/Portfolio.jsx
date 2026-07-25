@@ -27,9 +27,6 @@ export default function Portfolio() {
       const project = projects.find((p) => p.id === e.detail.projectId);
       if (project) {
         openProject(project);
-        setTimeout(() => {
-          document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
-        }, 50);
       }
     };
     window.addEventListener('openProject', handleOpen);
