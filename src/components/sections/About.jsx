@@ -1,4 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+let sharedObserver = null;
+const revealCallbacks = new Map();
+
+function getSharedObserver() {
+  if (sharedObserver) return sharedObserver;
+  sharedObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const cb = revealCallbacks.get(entry.target);
+          if (cb) cb();
+          sharedObserver.unobserve(entry.target);
+          revealCallbacks.delete(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+  return sharedObserver;
+}
 
 function Reveal({ children, delay = 0, style = {} }) {
   const ref = useRef(null);
@@ -6,14 +27,15 @@ function Reveal({ children, delay = 0, style = {} }) {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.1 }
-    );
+    if (!el || visible) return;
+    const obs = getSharedObserver();
+    revealCallbacks.set(el, () => setVisible(true));
     obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+    return () => {
+      obs.unobserve(el);
+      revealCallbacks.delete(el);
+    };
+  }, [visible]);
 
   return (
     <div ref={ref} style={{

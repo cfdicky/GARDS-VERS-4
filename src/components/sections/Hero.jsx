@@ -210,7 +210,6 @@ export default function Hero({ loaded }) {
                     : 'none',
                   opacity: s.opacity,
                   animation: `starTwinkle ${s.duration}s ease-in-out ${s.delay}s infinite alternate`,
-                  willChange: 'transform, opacity',
                 }}
               />
             ))}
@@ -684,7 +683,7 @@ export default function Hero({ loaded }) {
           width: 80px; height: 6px; transform: translateY(-50%);
           background: linear-gradient(to left,
             rgba(255,255,255,0.3) 0%, rgba(200,220,255,0.1) 50%, transparent 100%);
-          border-radius: 100px; filter: blur(2px);
+          border-radius: 100px;
         }
 
         .meteor-1 { top: 5%; left: 5%; animation: meteorShoot 8s linear infinite 2s; }
@@ -757,18 +756,18 @@ export default function Hero({ loaded }) {
         }
 
         @keyframes nebulaHue1Mobile {
-          0%, 100% { opacity: 0.7; filter: blur(40px) hue-rotate(0deg); }
-          50% { opacity: 1; filter: blur(40px) hue-rotate(25deg); }
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 1; }
         }
 
         @keyframes nebulaHue2Mobile {
-          0%, 100% { opacity: 0.6; filter: blur(50px) hue-rotate(0deg); }
-          50% { opacity: 0.9; filter: blur(50px) hue-rotate(-20deg); }
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 0.9; }
         }
 
         @keyframes nebulaHue3Mobile {
-          0%, 100% { opacity: 0.5; filter: blur(45px) hue-rotate(0deg); }
-          50% { opacity: 0.8; filter: blur(45px) hue-rotate(15deg); }
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 0.8; }
         }
 
         @keyframes gardsSpin {
