@@ -26,7 +26,7 @@ export default function Portfolio() {
     const handleOpen = (e) => {
       const project = projects.find((p) => p.id === e.detail.projectId);
       if (project) {
-        openProject(project);
+        openProjectRef.current(project);
       }
     };
     window.addEventListener('openProject', handleOpen);
@@ -37,6 +37,9 @@ export default function Portfolio() {
     setActiveProject(project);
     setActiveImage(0);
   };
+
+  const openProjectRef = useRef(openProject);
+  openProjectRef.current = openProject;
 
   const closeProject = () => {
     setActiveProject(null);
