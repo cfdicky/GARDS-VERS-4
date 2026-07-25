@@ -616,7 +616,7 @@
 
   .project-modal { padding: 0.5rem; }
   .project-modal-content { border-radius: 10px; max-height: 95vh; }
-  .modal-main-image { border-radius: 10px 10px 0 0; aspect-ratio: 16/10; }
+  .modal-main-image { border-radius: 10px 10px 0 0; }
   .modal-main-image img { object-fit: contain; background: #000; }
   .modal-details { padding: 1rem 1.25rem 1.5rem; }
   .modal-meta { grid-template-columns: 1fr 1fr; }
