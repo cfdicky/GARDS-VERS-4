@@ -8,7 +8,7 @@ export default function Testimonials() {
     <section id="testimonials" className="section" style={{ background: 'var(--c-bg)' }}>
       <div className="container-main">
         <div className="section-header">
-          <span style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--c-text-muted)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--c-text-muted)' }}>
             Kind Words
           </span>
           <h2 className="section-title">

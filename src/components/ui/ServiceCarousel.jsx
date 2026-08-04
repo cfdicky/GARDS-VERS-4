@@ -246,16 +246,26 @@ export const ServiceCarousel = ({ services }) => {
               key={i}
               aria-label={`Go to slide ${i + 1}`}
               onClick={() => api?.scrollTo(i)}
-              className="rounded-full transition-all duration-300"
+              className="flex items-center justify-center"
               style={{
-                width: current === i ? '1.5rem' : '0.5rem',
-                height: '0.375rem',
-                background: current === i ? 'var(--c-accent)' : 'var(--c-border)',
+                width: '44px',
+                height: '44px',
                 cursor: 'pointer',
                 border: 'none',
+                background: 'transparent',
                 padding: 0,
               }}
-            />
+            >
+              <span
+                className="rounded-full transition-all duration-300"
+                style={{
+                  display: 'block',
+                  width: current === i ? '1.5rem' : '0.5rem',
+                  height: '0.375rem',
+                  background: current === i ? 'var(--c-accent)' : 'var(--c-border)',
+                }}
+              />
+            </button>
           ))}
         </div>
       </div>

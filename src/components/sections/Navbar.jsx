@@ -48,18 +48,18 @@ export default function Navbar({ loaded }) {
             onClick={() => setMenuOpen(!menuOpen)}
             className="nav-hamburger"
             aria-label="Menu"
-            style={{
-              display: 'none',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              gap: '5px',
-              width: '28px',
-              height: '28px',
-            }}
+              style={{
+                display: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: '5px',
+                width: '44px',
+                height: '44px',
+              }}
           >
             <span className="hamburger-line" style={{
               display: 'block',

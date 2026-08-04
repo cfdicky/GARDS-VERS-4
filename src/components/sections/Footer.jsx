@@ -14,7 +14,7 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="footer-heading">Navigation</h4>
+            <div className="footer-heading">Navigation</div>
             <ul className="footer-links">
               <li><a href="#work">Work</a></li>
               <li><a href="#about">About</a></li>
@@ -23,7 +23,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="footer-heading">Connect</h4>
+            <div className="footer-heading">Connect</div>
             <ul className="footer-links">
               <li>
                 <a href="https://www.instagram.com/gards.creative" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

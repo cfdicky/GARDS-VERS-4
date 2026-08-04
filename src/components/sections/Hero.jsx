@@ -311,11 +311,11 @@ export default function Hero({ loaded }) {
         )}
 
         {/* 3D Scene */}
-        <div style={{
+        <div className="hero-scene" style={{
           position: 'relative',
           width: '100%',
           maxWidth: '1200px',
-          height: isMobile ? '580px' : '750px',
+          height: isMobile ? '520px' : '750px',
           zIndex: 20,
         }}>
           {/* Central 3D Text */}
@@ -472,7 +472,7 @@ export default function Hero({ loaded }) {
                         <div style={{
                           width: '24px', height: '24px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0,
                         }}>
-                          <img src={project.image} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <img src={project.image} alt="" loading="lazy" width="24" height="24" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                         <div>
                           <div style={{
@@ -584,7 +584,7 @@ export default function Hero({ loaded }) {
         <div style={{
           textAlign: 'center', marginTop: isMobile ? '2rem' : '3rem',
           padding: isMobile ? '0 1rem' : undefined,
-          color: 'rgba(255,255,255,0.25)', fontSize: isMobile ? '0.6rem' : '0.6875rem',
+          color: 'rgba(255,255,255,0.55)', fontSize: isMobile ? '0.75rem' : '0.75rem',
           fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
           zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.8s ease 1.2s',
         }}>
@@ -598,13 +598,13 @@ export default function Hero({ loaded }) {
           padding: isMobile ? '0 1rem' : undefined,
           zIndex: 10, opacity: loaded ? 1 : 0, transition: 'opacity 0.8s ease 1.5s',
         }}>
-          <h2 style={{
+          <h1 style={{
             fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
             fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', color: '#ffffff',
             lineHeight: 1.3, marginBottom: '1rem',
           }}>
             We Build<br />Creative Experiences.
-          </h2>
+          </h1>
           <p style={{
             fontSize: 'clamp(0.8rem, 1.2vw, 0.95rem)', color: 'rgba(255,255,255,0.5)',
             lineHeight: 1.8, maxWidth: '520px', margin: '0 auto',
@@ -633,8 +633,8 @@ export default function Hero({ loaded }) {
                 {stat.value}
               </div>
               <div style={{
-                fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em',
-                textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginTop: '0.25rem',
+                fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.1em',
+                textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginTop: '0.25rem',
               }}>
                 {stat.label}
               </div>
@@ -812,6 +812,13 @@ export default function Hero({ loaded }) {
           0%, 100% { transform: translate(0, 0); }
           33% { transform: translate(5px, -8px); }
           66% { transform: translate(-3px, 5px); }
+        }
+
+        @media (max-width: 768px) {
+          .hero-scene { height: min(520px, 80vh) !important; }
+        }
+        @media (max-width: 380px) {
+          .hero-scene { height: min(500px, 80vh) !important; }
         }
       `}</style>
     </>

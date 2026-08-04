@@ -3,6 +3,14 @@ import { projects } from '../../tokens/design-system';
 
 const categories = ['All', ...new Set(projects.map((p) => p.category))];
 
+function getSrcSet(src) {
+  if (typeof src !== 'string' || !src.includes('images.unsplash.com')) return undefined;
+  const base = src.split('?')[0];
+  return `${base}?w=480&q=75 480w, ${base}?w=960&q=75 960w, ${base}?w=1600&q=75 1600w`;
+}
+
+const imgSizes = '(max-width: 768px) 50vw, 33vw';
+
 export default function Portfolio() {
   const [activeProject, setActiveProject] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
@@ -120,7 +128,7 @@ export default function Portfolio() {
     <section id="work" className="section" style={{ background: 'var(--c-bg)' }}>
       <div className="container-main">
         <div className="section-header" style={{ alignItems: 'center', textAlign: 'center' }}>
-          <span style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--c-text-muted)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--c-text-muted)' }}>
             Selected Work
           </span>
           <h2 className="section-title">
@@ -145,12 +153,13 @@ export default function Portfolio() {
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
                 style={{
-                  padding: '0.5rem 1.25rem', borderRadius: '50px',
+                  padding: '0.75rem 1.25rem', borderRadius: '50px',
                   border: activeCategory === cat ? '1px solid var(--c-accent)' : '1px solid rgba(255,255,255,0.1)',
                   background: activeCategory === cat ? 'var(--c-accent)' : 'transparent',
                   color: activeCategory === cat ? '#000' : 'var(--c-text-dim)',
                   fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em',
                   textTransform: 'uppercase', cursor: 'pointer',
+                  minHeight: '48px',
                   transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
                   fontFamily: "'Space Grotesk', sans-serif",
                   display: 'flex', alignItems: 'center', gap: '0.4rem',
@@ -190,7 +199,16 @@ export default function Portfolio() {
                   willChange: 'transform, opacity',
                 }}
               >
-                <img src={project.image} alt={project.title} loading="lazy" />
+                <img
+                  src={project.image}
+                  srcSet={getSrcSet(project.image)}
+                  sizes={imgSizes}
+                  alt={project.title}
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="portfolio-card-overlay">
                   <div style={{ fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--c-accent)', marginBottom: '0.25rem' }}>
                     {project.category}
@@ -238,12 +256,30 @@ export default function Portfolio() {
             </button>
             <div className="modal-gallery">
               <div className="modal-main-image">
-                <img src={activeProject.images[activeImage]} alt={activeProject.title} loading="lazy" />
+                <img
+                  src={activeProject.images[activeImage]}
+                  srcSet={getSrcSet(activeProject.images[activeImage])}
+                  sizes="(max-width: 768px) 100vw, 900px"
+                  alt={activeProject.title}
+                  width="1200"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="modal-thumbnails">
                 {activeProject.images.map((img, i) => (
                   <div key={i} className={`modal-thumb ${i === activeImage ? 'active' : ''}`} onClick={() => setActiveImage(i)}>
-                    <img src={img} alt={`${activeProject.title} ${i + 1}`} loading="lazy" />
+                    <img
+                      src={img}
+                      srcSet={getSrcSet(img)}
+                      sizes="72px"
+                      alt={`${activeProject.title} ${i + 1}`}
+                      width="72"
+                      height="48"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                 ))}
               </div>

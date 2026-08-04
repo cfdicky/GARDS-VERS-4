@@ -10,7 +10,7 @@
   --c-border: rgba(255,255,255,0.06);
   --c-text: #f0ece4;
   --c-text-dim: rgba(240,236,228,0.6);
-  --c-text-muted: rgba(240,236,228,0.3);
+  --c-text-muted: rgba(240,236,228,0.55);
   --c-accent: #c8ff00;
   --c-accent-dim: rgba(200,255,0,0.7);
 }
@@ -67,7 +67,7 @@
 .nav-links a:hover { color: var(--c-text); }
 .nav-links a:hover::after { width: 100%; }
 .nav-cta {
-  padding: 0.6rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   border: 1px solid var(--c-border);
   border-radius: 50px;
   font-size: 0.75rem;
@@ -79,6 +79,10 @@
   transition: all 0.3s ease;
   background: transparent;
   white-space: nowrap;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .nav-cta:hover {
   background: var(--c-accent);
@@ -344,7 +348,8 @@
 .form-textarea { resize: none; }
 .service-options { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .service-option {
-  padding: 0.625rem 1.25rem;
+  padding: 0.75rem 1.25rem;
+  min-height: 48px;
   border: 1px solid var(--c-border);
   border-radius: 50px;
   font-size: 0.8125rem;
@@ -397,19 +402,22 @@
   margin-top: 1rem;
 }
 .footer-heading {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--c-text-muted);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
-.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
 .footer-links a {
   color: var(--c-text-dim);
   text-decoration: none;
   font-size: 0.9375rem;
   transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
 }
 .footer-links a:hover { color: var(--c-accent); }
 .footer-bottom {
@@ -449,8 +457,8 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 1px solid var(--c-border);
   background: rgba(0,0,0,0.5);
@@ -621,7 +629,7 @@
   .modal-details { padding: 1rem 1.25rem 1.5rem; }
   .modal-meta { grid-template-columns: 1fr 1fr; }
   .modal-thumb { width: 56px; height: 38px; }
-  .modal-close { top: 0.5rem; right: 0.5rem; width: 32px; height: 32px; }
+  .modal-close { top: 0.5rem; right: 0.5rem; width: 44px; height: 44px; }
 }
 
 @media (max-width: 420px) {

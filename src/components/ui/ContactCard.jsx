@@ -25,9 +25,9 @@ const ContactCard = ({
       <PlusIcon className="absolute -bottom-3 -right-3 h-6 w-6 text-[var(--c-accent)]" />
       <div className="flex flex-col justify-between lg:col-span-2">
         <div className="relative h-full space-y-4 px-4 py-8 md:p-8">
-          <h1 className="font-[Space_Grotesk] text-3xl font-bold tracking-tight text-[var(--c-text)] md:text-4xl lg:text-5xl">
+          <h2 className="font-[Space_Grotesk] text-3xl font-bold tracking-tight text-[var(--c-text)] md:text-4xl lg:text-5xl">
             {title}
-          </h1>
+          </h2>
           <p className="max-w-xl text-sm text-[var(--c-text-dim)] md:text-base lg:text-lg">
             {description}
           </p>
