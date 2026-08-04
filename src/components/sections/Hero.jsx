@@ -115,12 +115,15 @@ export default function Hero({ loaded }) {
   }, []);
 
   useEffect(() => {
+    const el = sectionRef.current;
     let frame;
     let lastUpdate = 0;
+    let running = true;
     const targetFPS = isMobile ? 24 : 60;
     const interval = 1000 / targetFPS;
 
     const animate = (timestamp) => {
+      if (!running) return;
       if (timestamp - lastUpdate >= interval) {
         timeRef.current += 0.008;
         lastUpdate = timestamp;
@@ -143,8 +146,29 @@ export default function Hero({ loaded }) {
       }
       frame = requestAnimationFrame(animate);
     };
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!running) {
+            running = true;
+            frame = requestAnimationFrame(animate);
+          }
+        } else if (running) {
+          running = false;
+          cancelAnimationFrame(frame);
+        }
+      },
+      { threshold: 0 }
+    );
+    if (el) obs.observe(el);
+
     frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      running = false;
+      cancelAnimationFrame(frame);
+      if (obs) obs.disconnect();
+    };
   }, [isMobile, projectIndexMap]);
 
   useEffect(() => {

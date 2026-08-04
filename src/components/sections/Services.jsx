@@ -1,8 +1,31 @@
-import { useState } from 'react';
+import { Camera, Video, PenTool, Palette, Share2 } from 'lucide-react';
 import { services } from '../../tokens/design-system';
+import { ServiceCarousel } from '../ui/ServiceCarousel';
+
+const serviceIcons = {
+  photography: Camera,
+  videography: Video,
+  logo: PenTool,
+  branding: Palette,
+  social: Share2,
+};
+
+const serviceGradients = {
+  photography: 'from-purple-950/90 via-purple-900/40 to-transparent',
+  videography: 'from-blue-950/90 via-blue-900/40 to-transparent',
+  logo: 'from-amber-950/90 via-amber-900/40 to-transparent',
+  branding: 'from-lime-950/90 via-lime-900/40 to-transparent',
+  social: 'from-rose-950/90 via-rose-900/40 to-transparent',
+};
 
 export default function Services() {
-  const [expandedId, setExpandedId] = useState(null);
+  const carouselServices = services.map((service) => ({
+    number: service.number,
+    title: service.title,
+    description: service.description,
+    icon: serviceIcons[service.id] || Palette,
+    gradient: serviceGradients[service.id] || serviceGradients.branding,
+  }));
 
   return (
     <section id="services" className="section" style={{ background: 'var(--c-bg)' }}>
@@ -17,31 +40,7 @@ export default function Services() {
           </h2>
         </div>
 
-        <div>
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className={`service-row ${expandedId === service.id ? 'expanded' : ''}`}
-              onClick={() => setExpandedId(expandedId === service.id ? null : service.id)}
-            >
-              <span className="service-num">{service.number}</span>
-              <h3 className="service-name">{service.title}</h3>
-              <div className="service-tags">
-                {service.capabilities.map((cap) => (
-                  <span key={cap} className="service-tag">{cap}</span>
-                ))}
-              </div>
-              <div className="service-arrow">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </div>
-              <div className="service-desc">
-                {service.description}
-              </div>
-            </div>
-          ))}
-        </div>
+        <ServiceCarousel services={carouselServices} />
       </div>
     </section>
   );

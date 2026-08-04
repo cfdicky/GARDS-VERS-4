@@ -5,7 +5,7 @@ export default function Testimonials() {
   const [active, setActive] = useState(0);
 
   return (
-    <section id="about" className="section" style={{ background: 'var(--c-bg)' }}>
+    <section id="testimonials" className="section" style={{ background: 'var(--c-bg)' }}>
       <div className="container-main">
         <div className="section-header">
           <span style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--c-text-muted)' }}>

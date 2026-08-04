@@ -107,7 +107,20 @@ function App() {
   const [fontsReady, setFontsReady] = useState(false);
 
   useEffect(() => {
-    document.fonts.ready.then(() => setFontsReady(true));
+    let cancelled = false;
+    const done = () => {
+      if (!cancelled) setFontsReady(true);
+    };
+    const fallback = setTimeout(done, 2500);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(done).catch(done);
+    } else {
+      done();
+    }
+    return () => {
+      cancelled = true;
+      clearTimeout(fallback);
+    };
   }, []);
 
   useEffect(() => {
