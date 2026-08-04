@@ -385,15 +385,6 @@ export default function Hero({ loaded }) {
             const pos = activePositions[index];
             const isSelected = selectedCard === project.id;
 
-  if (!loaded) {
-    return (
-      <section id="hero" style={{
-        minHeight: '100vh',
-        background: '#030308',
-      }} />
-    );
-  }
-
   return (
               <div
                 key={project.id}

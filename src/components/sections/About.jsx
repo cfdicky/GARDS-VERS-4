@@ -51,13 +51,6 @@ function Reveal({ children, delay = 0, style = {} }) {
 
 
 
-const timeline = [
-  { year: '2016', title: 'The Beginning', desc: 'Gards Creative was founded from a simple belief: creativity should solve problems, not just decorate them.' },
-  { year: '2018', title: 'Growing Together', desc: 'We expanded our services to include videography, brand strategy, and social media management.' },
-  { year: '2021', title: 'Digital Innovation', desc: 'Embracing new technologies, we began offering full digital experience design and web development.' },
-  { year: '2024', title: 'Trusted Partner', desc: 'Today, we continue to grow alongside our clients, turning ambitious ideas into memorable brand experiences.' },
-];
-
 const missions = [
   'Deliver creative solutions that create measurable business impact.',
   'Build authentic brands with strong visual identities.',
@@ -121,15 +114,6 @@ const hoverCard = {
 };
 
 export default function About() {
-  const [activeTimeline, setActiveTimeline] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTimeline((prev) => (prev + 1) % timeline.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <>
       {/* ===== WHO WE ARE ===== */}
@@ -155,71 +139,6 @@ export default function About() {
                 Our approach combines design thinking, storytelling, photography, videography, and digital innovation to create work that is not only visually beautiful but also strategically effective.
               </p>
             </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== OUR STORY ===== */}
-      <section className="section" style={{ background: 'var(--c-bg-alt)', borderTop: '1px solid var(--c-border)', borderBottom: '1px solid var(--c-border)' }}>
-        <div className="container-main">
-          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <Reveal>
-              <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                <Label text="Our Story" />
-                <Title>Our Journey</Title>
-              </div>
-            </Reveal>
-
-            <div className="about-timeline-wrap" style={{ position: 'relative' }}>
-              <div style={{
-                position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px',
-                background: 'linear-gradient(to bottom, transparent, var(--c-border) 10%, var(--c-border) 90%, transparent)',
-                transform: 'translateX(-50%)',
-              }} />
-
-              {timeline.map((item, i) => {
-                const isLeft = i % 2 === 0;
-                return (
-                  <Reveal key={i} delay={i * 0.1}>
-                    <div className="about-tl-item" style={{
-                      display: 'flex',
-                      justifyContent: isLeft ? 'flex-end' : 'flex-start',
-                      paddingLeft: isLeft ? 0 : '52%',
-                      paddingRight: isLeft ? '52%' : 0,
-                      marginBottom: '3rem',
-                      position: 'relative',
-                    }}>
-                      <div style={{
-                        position: 'absolute', left: '50%', top: '0.5rem',
-                        width: '12px', height: '12px', borderRadius: '50%',
-                        background: i === activeTimeline ? 'var(--c-accent)' : 'var(--c-surface)',
-                        border: '2px solid var(--c-accent)',
-                        transform: 'translateX(-50%)',
-                        transition: 'all 0.3s ease', zIndex: 2,
-                      }} />
-                      <div style={{
-                        padding: '1.5rem', borderRadius: '12px',
-                        border: '1px solid var(--c-border)', background: 'var(--c-surface)',
-                        maxWidth: '380px', width: '100%',
-                        textAlign: isLeft ? 'right' : 'left',
-                        transition: 'all 0.3s ease',
-                        borderColor: i === activeTimeline ? 'rgba(200,255,0,0.2)' : 'var(--c-border)',
-                      }}>
-                        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '0.875rem', color: 'var(--c-accent)', marginBottom: '0.375rem' }}>
-                          {item.year}
-                        </div>
-                        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '1.125rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>
-                          {item.title}
-                        </div>
-                        <div style={{ fontSize: '0.875rem', color: 'var(--c-text-dim)', lineHeight: 1.6 }}>
-                          {item.desc}
-                        </div>
-                      </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
           </div>
         </div>
       </section>
@@ -394,13 +313,6 @@ export default function About() {
       {/* Mobile styles */}
       <style>{`
         @media (max-width: 768px) {
-          .about-timeline-wrap > div:first-child { left: 16px !important; transform: none !important; }
-          .about-tl-item {
-            justify-content: flex-start !important;
-            padding-left: 40px !important;
-            padding-right: 0 !important;
-          }
-          .about-tl-item > div:first-child { left: 16px !important; transform: none !important; }
           .about-approach-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (max-width: 480px) {
