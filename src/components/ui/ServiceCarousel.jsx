@@ -198,10 +198,26 @@ const ServiceCard = ({ service, index }) => {
 export const ServiceCarousel = ({ services }) => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [api, setApi] = React.useState(undefined);
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) return;
+    const onSelect = () => {
+      setCurrent(api.selectedScrollSnap());
+    };
+    setCount(api.scrollSnapList().length);
+    onSelect();
+    api.on('select', onSelect);
+    return () => {
+      api.off('select', onSelect);
+    };
+  }, [api]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4">
-      <Carousel ref={ref} opts={{ align: 'start', loop: true }} className="relative">
+      <Carousel ref={ref} opts={{ align: 'start', loop: true }} setApi={setApi} className="relative">
         <motion.div
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
@@ -219,6 +235,30 @@ export const ServiceCarousel = ({ services }) => {
         </motion.div>
         <CarouselNext />
       </Carousel>
+
+      <div className="mt-6 flex items-center justify-between md:hidden">
+        <span className="font-mono text-[0.625rem] font-semibold uppercase tracking-widest text-[var(--c-text-muted)]">
+          Swipe to explore
+        </span>
+        <div className="flex items-center gap-2">
+          {Array.from({ length: count }).map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => api?.scrollTo(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: current === i ? '1.5rem' : '0.5rem',
+                height: '0.375rem',
+                background: current === i ? 'var(--c-accent)' : 'var(--c-border)',
+                cursor: 'pointer',
+                border: 'none',
+                padding: 0,
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
